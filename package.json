@@ -6,7 +6,7 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-   "build:ui": "rmdir /s /q dist && cd \"../../Osa 2/puhelinluettelo\" && npm run build && mkdir \"../../Osa 3/full_stack_open_osa3/dist\" && xcopy dist \"../../Osa 3/full_stack_open_osa3/dist\" /E /I",
+    "build:ui": "rmdir /s /q dist && cd \"../../Osa 2/puhelinluettelo\" && npm run build && mkdir \"../../Osa 3/full_stack_open_osa3/dist\" && xcopy dist \"../../Osa 3/full_stack_open_osa3/dist\" /E /I",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "author": "",
@@ -15,6 +15,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "mongoose": "^8.13.2",
     "morgan": "^1.10.0"
   }
 }
