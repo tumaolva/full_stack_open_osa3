@@ -18,7 +18,7 @@ let persons = []
      })
 
     app.get('/api/persons', (request, response) => {
-        Person.find({}).then(result => {
+        Person.find({}).then(persons => {
         response.json(persons)
      })
     })
