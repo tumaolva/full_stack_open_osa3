@@ -13,41 +13,42 @@ morgan.token('body', (req) => {
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = []
-    app.get('/', (request, response) => {
-     response.send('<h1>Hello World!</h1>')
-     })
 
-    app.get('/api/persons', (request, response) => {
+app.get('/', (request, response) => {
+     response.send('<h1>Hello World!</h1>')
+})
+
+app.get('/api/persons', (request, response) => {
         Person.find({}).then(persons => {
         response.json(persons)
      })
-    })
+})
 
-    app.get('/api/persons/:id', (request, response) => {
-        Person.findById(request.params.id).then(person => {
+app.get('/api/persons/:id', (request, response) => {
+    Person.findById(request.params.id).then(person => {
             response.json(person.toJSON())
-        })
-        const id = request.params.id
-       if (id) {
+    })
+    const id = request.params.id
+        if (id) {
          response.json(person)
-         } 
+        } 
        else {
          response.status(404).end()
          console.log('Henkilöä ei ole olemassa')
         }
-    })
+})
 
 app.delete('/api/persons/:id', (request, response) => {
         const id = request.params.id
         persons = persons.filter(person => person.id !== id)
         response.status(204).end()
         console.log('henkilö poistettu')
-    })
+})
 
-const generateId = () => {
-    const maxId = Math.random() * 1000
-     return String(maxId)
-    }
+// const generateId = () => {
+//     const maxId = Math.random() * 1000
+//      return String(maxId)
+//     }
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
