@@ -81,6 +81,21 @@ app.post('/api/persons', (request, response) => {
     console.log('henkilö lisätty')
 })
 
+app.put('/api/persons/:id', (request, response, next) => { // tämä ajetaan vain jos sivulla on koitettu lisätä samannimistä henkilöä uudestaan
+    const { name, number } = request.body
+
+    Person.findByIdAndUpdate(request.params.id, { name, number }, { new: true })
+      .then(updatedPerson => {
+        if (updatedPerson) {
+          response.json(updatedPerson)
+        } else {
+          response.status(404).end()
+        }
+      })
+      .catch(error => next(error))
+})
+
+
 app.get('/info', (request, response) => {
     response.send(`<h2>Phonebook has info for ${persons.length} people</h2>
     <h2>${new Date()}</h2>`)
