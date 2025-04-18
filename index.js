@@ -52,14 +52,14 @@ app.delete('/api/persons/:id', (request, response, next) => {
 //      return String(maxId)
 //     }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
     if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'Nimi tai numero puuttuu'
         })
-    }
+     }
 
     if (persons.find(person => person.name === body.name)) {
         return response.status(400).json({
@@ -72,19 +72,15 @@ app.post('/api/persons', (request, response) => {
         number: body.number,
     })
     person.save().then(savedPerson => {
-        return savedPerson.toJSON()
-    })
-    persons = persons.concat(person)
-
-    response.json(person)
-    
-    console.log('henkilö lisätty')
+      response.json(savedPerson)
+    })  .catch(error => next(error))
+     persons = persons.concat(person)
 })
 
 app.put('/api/persons/:id', (request, response, next) => { // tämä ajetaan vain jos sivulla on koitettu lisätä samannimistä henkilöä uudestaan
     const { name, number } = request.body
 
-    Person.findByIdAndUpdate(request.params.id, { name, number }, { new: true })
+    Person.findByIdAndUpdate(request.params.id, { name, number }, { new: true, runValidators: true, context: 'query' }) // custom validation käyttöön, kun muokataan henkilön numeroa
       .then(updatedPerson => {
         if (updatedPerson) {
           response.json(updatedPerson)
@@ -106,6 +102,8 @@ app.get('/info', (request, response) => {
   
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+      return response.status(400).json({ error: error.message })
     }
   
     next(error)
